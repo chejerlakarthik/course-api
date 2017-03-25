@@ -1,21 +1,25 @@
 package org.tutorials.springboot.topics;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
 public class TopicService {
 
-	private List<Topic> topics = new ArrayList<>(Arrays.asList(new Topic("1","Struts 2"), new Topic("2", "Spring"), new Topic("3","Hibernate")));
+	@Autowired
+	private TopicRepository topicRepository;
 	
 	/**
-	 * Return all topics
+	 * Return all topics.
+	 * Note: uses Java 8 style method references
 	 * @return
 	 */
 	public List<Topic> getAllTopics(){
+		List<Topic> topics = new ArrayList<Topic>();
+		topicRepository.findAll().forEach(topics::add);
 		return topics;
 	}
 	
@@ -25,7 +29,7 @@ public class TopicService {
 	 * @return
 	 */
 	public Topic getTopicById(String id){
-		return topics.stream().filter( t -> t.getTopicId().equals(id)).findFirst().get();
+		return topicRepository.findOne(id);
 	}
 	
 	/**
@@ -33,13 +37,7 @@ public class TopicService {
 	 * @param topic
 	 */
 	public void addTopic(Topic topic){
-		for(Topic eachTopic : topics){
-			if(topic.getTopicId().equals(eachTopic.getTopicId())){
-				return;
-			}
-		}
-		topics.add(topic);
-		return;
+		topicRepository.save(topic);
 	}
 	
 	/**
@@ -47,8 +45,7 @@ public class TopicService {
 	 * @param id
 	 */
 	public void removeTopic(String id){
-		topics.removeIf(t -> t.getTopicId().equals(id));
-		return;
+		topicRepository.delete(id);
 	}
 
 	/**
@@ -58,12 +55,6 @@ public class TopicService {
 	 * @return
 	 */
 	public void updateTopic(String id, Topic topic) {
-		for(int i= 0; i <topics.size(); i++){
-			Topic currentTopic = topics.get(i);
-			if(currentTopic.getTopicId().equals(id)){
-				topics.set(i, topic);
-				return;
-			}
-		}
+		topicRepository.save(topic);
 	}
 }
