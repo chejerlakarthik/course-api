@@ -1,7 +1,13 @@
 package org.tutorials.springboot.topics;
 
+import java.util.Set;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
+
+import org.tutorials.springboot.courses.Course;
 
 @Entity
 public class Topic {
@@ -10,6 +16,9 @@ public class Topic {
 	private String id;
 	private String topicName;
 	private String topicDescription;
+	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "courseId")
+	private Set<Course> courses;
 	
 	public Topic(){}
 	
